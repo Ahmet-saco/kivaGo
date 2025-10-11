@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "510219616867",
+    "project_id": "kivago",
+    "storage_bucket": "kivago.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510219616867:android:d42b242fccc46f55aaae56",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510219616867-s4vimjpq435tc4oh6okhspa9m5vfdlm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtaiMeKUiayP-DCyc12cvZG243Lq6cKnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510219616867-s4vimjpq435tc4oh6okhspa9m5vfdlm0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
