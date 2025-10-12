@@ -67,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         title: const Text(
-          'kivaGo AI',
+          'KivaGo',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,

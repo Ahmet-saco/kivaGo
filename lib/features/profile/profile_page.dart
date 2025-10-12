@@ -14,7 +14,7 @@ class ProfilePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: const Text(
-          'Profile',
+          'Profil',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -67,10 +67,32 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 4),
 
-              // Username
-              const Text(
-                '@sophia.carter',
-                style: TextStyle(fontSize: 16, color: Color(0xFF999999)),
+              // Seyahat Kişilik Tipi
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFCF3F6),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '🗺️',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      'Maceraperest',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFFC11336),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 24),
@@ -89,7 +111,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    'Edit Profile',
+                    'Profili Düzenle',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -108,7 +130,7 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'About',
+                      'Hakkında',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -117,7 +139,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Sophia Carter is a passionate advocate for mental wellness, sharing insights and strategies for personal growth and mindfulness.',
+                      'Dünyayı keşfetmeyi seven bir gezgin. Yeni kültürler, lezzetler ve deneyimler peşinde koşan bir maceraperest. Seyahat etmek benim için sadece bir hobi değil, yaşam tarzı! ✈️🌍',
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey[700],
@@ -137,7 +159,7 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Stats',
+                      'İstatistikler',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -161,7 +183,7 @@ class ProfilePage extends StatelessWidget {
                             child: Column(
                               children: [
                                 const Text(
-                                  '120',
+                                  '12',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -170,7 +192,7 @@ class ProfilePage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
-                                  'Posts',
+                                  'Ülke',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Color(0xFFCD5970),
@@ -195,7 +217,7 @@ class ProfilePage extends StatelessWidget {
                             child: Column(
                               children: [
                                 const Text(
-                                  '85',
+                                  '47',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -204,7 +226,7 @@ class ProfilePage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
-                                  'Followers',
+                                  'Seyahat',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Color(0xFFCD5970),
@@ -229,7 +251,7 @@ class ProfilePage extends StatelessWidget {
                             child: Column(
                               children: [
                                 const Text(
-                                  '250',
+                                  '285',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -238,7 +260,7 @@ class ProfilePage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
-                                  'Following',
+                                  'Gün',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Color(0xFFCD5970),
