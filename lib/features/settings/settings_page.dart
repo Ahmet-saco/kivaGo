@@ -14,7 +14,7 @@ class SettingsPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: const Text(
-          'Settings',
+          'Ayarlar',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -30,7 +30,7 @@ class SettingsPage extends StatelessWidget {
             children: [
               // Account Section
               const Text(
-                'Account',
+                'Hesap',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -41,8 +41,8 @@ class SettingsPage extends StatelessWidget {
 
               _buildSettingsItem(
                 icon: Icons.person_outline,
-                title: 'Account Details',
-                subtitle: 'Manage your account details',
+                title: 'Hesap Detayları',
+                subtitle: 'Hesap bilgilerinizi yönetin',
                 onTap: () {},
               ),
 
@@ -50,8 +50,8 @@ class SettingsPage extends StatelessWidget {
 
               _buildSettingsItem(
                 icon: Icons.lock_outline,
-                title: 'Change Password',
-                subtitle: 'Change your password',
+                title: 'Şifre Değiştir',
+                subtitle: 'Şifrenizi değiştirin',
                 onTap: () {},
               ),
 
@@ -59,7 +59,7 @@ class SettingsPage extends StatelessWidget {
 
               // Preferences Section
               const Text(
-                'Preferences',
+                'Tercihler',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -70,8 +70,8 @@ class SettingsPage extends StatelessWidget {
 
               _buildSettingsItem(
                 icon: Icons.settings_outlined,
-                title: 'App Preferences',
-                subtitle: 'Customize your experience',
+                title: 'Uygulama Tercihleri',
+                subtitle: 'Deneyiminizi özelleştirin',
                 onTap: () {},
               ),
 
@@ -79,8 +79,8 @@ class SettingsPage extends StatelessWidget {
 
               _buildSettingsItem(
                 icon: Icons.notifications_outlined,
-                title: 'Notifications',
-                subtitle: 'Manage your notifications',
+                title: 'Bildirimler',
+                subtitle: 'Bildirimlerinizi yönetin',
                 onTap: () {},
               ),
 
@@ -88,7 +88,7 @@ class SettingsPage extends StatelessWidget {
 
               // Support Section
               const Text(
-                'Support',
+                'Destek',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -99,8 +99,8 @@ class SettingsPage extends StatelessWidget {
 
               _buildSettingsItem(
                 icon: Icons.help_outline,
-                title: 'Help Center',
-                subtitle: 'Get help and support',
+                title: 'Yardım Merkezi',
+                subtitle: 'Yardım ve destek alın',
                 onTap: () {},
               ),
 
@@ -108,8 +108,8 @@ class SettingsPage extends StatelessWidget {
 
               _buildSettingsItem(
                 icon: Icons.email_outlined,
-                title: 'Contact Us',
-                subtitle: 'Contact us for assistance',
+                title: 'Bize Ulaşın',
+                subtitle: 'Yardım için bize ulaşın',
                 onTap: () {},
               ),
             ],

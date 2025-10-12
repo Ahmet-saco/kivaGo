@@ -42,7 +42,7 @@ class _ChatPageState extends State<ChatPage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Mindtrip AI',
+          'KivaGo',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
