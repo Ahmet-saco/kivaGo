@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../features/chat/chat_page.dart';
+import '../../features/travels/travels_page.dart';
 import '../../features/profile/profile_page.dart';
 import '../../features/settings/settings_page.dart';
 
@@ -15,7 +16,12 @@ class _AppScaffoldState extends State<AppScaffold> {
   int _currentIndex = 0;
 
   // Keep all pages in memory to preserve scroll state
-  final List<Widget> _pages = const [ChatPage(), ProfilePage(), SettingsPage()];
+  final List<Widget> _pages = const [
+    ChatPage(),
+    TravelsPage(),
+    ProfilePage(),
+    SettingsPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,17 +45,22 @@ class _AppScaffoldState extends State<AppScaffold> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined, size: 28),
             activeIcon: Icon(Icons.home, size: 28),
-            label: 'Home',
+            label: 'Ana Sayfa',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.flight_takeoff_outlined, size: 28),
+            activeIcon: Icon(Icons.flight_takeoff, size: 28),
+            label: 'Seyahatler',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline, size: 28),
             activeIcon: Icon(Icons.person, size: 28),
-            label: 'Profile',
+            label: 'Profil',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined, size: 28),
             activeIcon: Icon(Icons.settings, size: 28),
-            label: 'Settings',
+            label: 'Ayarlar',
           ),
         ],
       ),
