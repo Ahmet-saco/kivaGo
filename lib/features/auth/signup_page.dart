@@ -11,11 +11,14 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _authService = AuthService();
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -23,6 +26,79 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Enter a valid email';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (value != _passwordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
+  Future<void> _signUpWithEmail() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.signUpWithEmailPassword(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AppScaffold()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        String errorMessage = 'Sign up failed';
+        if (e.toString().contains('email-already-in-use')) {
+          errorMessage = 'Email is already registered';
+        } else if (e.toString().contains('weak-password')) {
+          errorMessage = 'Password is too weak';
+        } else if (e.toString().contains('invalid-email')) {
+          errorMessage = 'Invalid email address';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: const Color(0xFFC11336),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _signInWithGoogle() async {
@@ -56,8 +132,10 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
               // Close button
               Align(
                 alignment: Alignment.topRight,
@@ -78,8 +156,11 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 40),
 
               // Email field
-              TextField(
+              TextFormField(
                 controller: _emailController,
+                validator: _validateEmail,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   hintText: 'Email',
                   hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
@@ -107,29 +188,40 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 20),
 
               // Password field
-              TextField(
+              TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
+                validator: _validatePassword,
+                obscureText: _obscurePassword,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
                   hintText: 'Password',
-                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
+                  hintStyle: const TextStyle(color: Color(0xFF999999), fontSize: 16),
                   filled: true,
-                  fillColor: Color(0xFFFDF5F7), // Very light #CD5970 tint
-                  border: OutlineInputBorder(
+                  fillColor: const Color(0xFFFDF5F7),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide.none,
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide(color: Color(0xFFC11336), width: 2),
                   ),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 20,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: const Color(0xFF999999),
+                    ),
+                    onPressed: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
                   ),
                 ),
               ),
@@ -137,29 +229,41 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 20),
 
               // Confirm Password field
-              TextField(
+              TextFormField(
                 controller: _confirmPasswordController,
-                obscureText: true,
-                decoration: const InputDecoration(
+                validator: _validateConfirmPassword,
+                obscureText: _obscureConfirmPassword,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _signUpWithEmail(),
+                decoration: InputDecoration(
                   hintText: 'Confirm Password',
-                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
+                  hintStyle: const TextStyle(color: Color(0xFF999999), fontSize: 16),
                   filled: true,
-                  fillColor: Color(0xFFFDF5F7), // Very light #CD5970 tint
-                  border: OutlineInputBorder(
+                  fillColor: const Color(0xFFFDF5F7),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide.none,
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide(color: Color(0xFFC11336), width: 2),
                   ),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 20,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                      color: const Color(0xFF999999),
+                    ),
+                    onPressed: () {
+                      setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
+                    },
                   ),
                 ),
               ),
@@ -171,16 +275,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AppScaffold(),
-                            ),
-                          );
-                        },
+                  onPressed: _isLoading ? null : _signUpWithEmail,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFC11336),
                     foregroundColor: Colors.white,
@@ -307,7 +402,8 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
 
               const SizedBox(height: 40),
-            ],
+              ],
+            ),
           ),
         ),
       ),

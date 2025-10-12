@@ -17,6 +17,14 @@ class _ChatPageState extends State<ChatPage> {
     },
   ];
 
+  // Geçmiş sohbetler (demo data)
+  final List<Map<String, String>> _chatHistory = [
+    {'title': 'Beach vacation ideas', 'time': '2 hours ago'},
+    {'title': 'Mountain hiking spots', 'time': 'Yesterday'},
+    {'title': 'City break suggestions', 'time': '2 days ago'},
+    {'title': 'Romantic getaway plans', 'time': '1 week ago'},
+  ];
+
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;
 
@@ -25,6 +33,17 @@ class _ChatPageState extends State<ChatPage> {
     });
 
     _messageController.clear();
+  }
+
+  void _startNewChat() {
+    setState(() {
+      _messages.clear();
+      _messages.add({
+        'isAI': true,
+        'text': 'Hello! How can I help you plan your next adventure today?',
+      });
+    });
+    Navigator.pop(context); // Close drawer
   }
 
   @override
@@ -41,6 +60,12 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         title: const Text(
           'KivaGo',
           style: TextStyle(
@@ -59,6 +84,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
+      drawer: _buildDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -242,6 +268,233 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      backgroundColor: Colors.white,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Profile Header
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Color(0xFFFCF3F6),
+                border: Border(
+                  bottom: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFDEB89A),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Welcome Back!',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Your Travel Companion',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF999999),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // New Chat Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: _startNewChat,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFC11336),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_circle_outline, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'New Chat',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Recent Chats Header
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Recent Chats',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF999999),
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Chat History List
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: _chatHistory.length,
+                itemBuilder: (context, index) {
+                  final chat = _chatHistory[index];
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFCF3F6),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.chat_bubble_outline,
+                        color: Color(0xFFC11336),
+                        size: 20,
+                      ),
+                    ),
+                    title: Text(
+                      chat['title']!,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      chat['time']!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF999999),
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.more_vert,
+                        size: 18,
+                        color: Color(0xFF999999),
+                      ),
+                      onPressed: () {},
+                    ),
+                    onTap: () {
+                      // Load selected chat
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+
+            // Footer
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Color(0xFFE0E0E0), width: 1),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.help_outline,
+                      size: 18,
+                      color: Color(0xFF999999),
+                    ),
+                    label: const Text(
+                      'Help',
+                      style: TextStyle(
+                        color: Color(0xFF999999),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 1,
+                    height: 20,
+                    color: const Color(0xFFE0E0E0),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.settings_outlined,
+                      size: 18,
+                      color: Color(0xFF999999),
+                    ),
+                    label: const Text(
+                      'Settings',
+                      style: TextStyle(
+                        color: Color(0xFF999999),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
