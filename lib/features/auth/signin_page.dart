@@ -11,16 +11,83 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Enter a valid email';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+  Future<void> _signInWithEmail() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.signInWithEmailPassword(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AppScaffold()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        String errorMessage = 'Sign in failed';
+        if (e.toString().contains('user-not-found')) {
+          errorMessage = 'No user found with this email';
+        } else if (e.toString().contains('wrong-password')) {
+          errorMessage = 'Wrong password';
+        } else if (e.toString().contains('invalid-credential')) {
+          errorMessage = 'Invalid email or password';
+        } else if (e.toString().contains('too-many-requests')) {
+          errorMessage = 'Too many attempts. Please try again later';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: const Color(0xFFC11336),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _signInWithGoogle() async {
@@ -54,8 +121,10 @@ class _SignInPageState extends State<SignInPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
               // Close button
               Align(
                 alignment: Alignment.topRight,
@@ -76,8 +145,11 @@ class _SignInPageState extends State<SignInPage> {
               const SizedBox(height: 40),
 
               // Email field
-              TextField(
+              TextFormField(
                 controller: _emailController,
+                validator: _validateEmail,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   hintText: 'Email',
                   hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
@@ -105,29 +177,41 @@ class _SignInPageState extends State<SignInPage> {
               const SizedBox(height: 20),
 
               // Password field
-              TextField(
+              TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
+                validator: _validatePassword,
+                obscureText: _obscurePassword,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _signInWithEmail(),
+                decoration: InputDecoration(
                   hintText: 'Password',
-                  hintStyle: TextStyle(color: Color(0xFF999999), fontSize: 16),
+                  hintStyle: const TextStyle(color: Color(0xFF999999), fontSize: 16),
                   filled: true,
-                  fillColor: Color(0xFFFDF5F7), // Very light #CD5970 tint
-                  border: OutlineInputBorder(
+                  fillColor: const Color(0xFFFDF5F7),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide.none,
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide.none,
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     borderSide: BorderSide(color: Color(0xFFC11336), width: 2),
                   ),
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 20,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: const Color(0xFF999999),
+                    ),
+                    onPressed: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
                   ),
                 ),
               ),
@@ -139,16 +223,7 @@ class _SignInPageState extends State<SignInPage> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AppScaffold(),
-                            ),
-                          );
-                        },
+                  onPressed: _isLoading ? null : _signInWithEmail,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFC11336),
                     foregroundColor: Colors.white,
@@ -275,7 +350,8 @@ class _SignInPageState extends State<SignInPage> {
               ),
 
               const SizedBox(height: 40),
-            ],
+              ],
+            ),
           ),
         ),
       ),
