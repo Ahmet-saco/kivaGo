@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'travel_edit_page.dart';
 
@@ -12,7 +11,7 @@ class TravelsPage extends StatefulWidget {
 
 class _TravelsPageState extends State<TravelsPage> {
   String _selectedFilter = 'Tümü';
-  final List<String> _filters = ['Tümü', 'Aktif', 'Tamamlanan', 'İptal'];
+  final List<String> _filters = ['Tümü', 'Aktif', 'Tamamlanan'];
 
   // Temsili seyahat verileri (mock data)
   final List<Map<String, dynamic>> _travels = [
@@ -407,15 +406,9 @@ class _TravelsPageState extends State<TravelsPage> {
                     ),
                     const SizedBox(width: 8),
                     _buildInfoChip(
-                      Icons.local_activity_outlined,
-                      '${travel['activities']} Aktivite',
+                      Icons.flag_outlined,
+                      '${travel['status']}',
                       const Color(0xFFFDF5F7),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildInfoChip(
-                      Icons.monetization_on_outlined,
-                      travel['budget'],
-                      const Color(0xFFFCF3F6),
                     ),
                   ],
                 ),

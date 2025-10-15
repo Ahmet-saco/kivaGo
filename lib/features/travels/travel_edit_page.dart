@@ -213,19 +213,10 @@ class _TravelEditPageState extends State<TravelEditPage> {
           const SizedBox(width: 12),
           Expanded(
             child: _buildInfoCard(
-              icon: Icons.local_activity_outlined,
-              label: 'Aktivite',
-              value: '${widget.travel['activities']}',
+              icon: Icons.flag_outlined,
+              label: 'Durum',
+              value: widget.travel['status'],
               color: const Color(0xFFFDF5F7),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildInfoCard(
-              icon: Icons.monetization_on_outlined,
-              label: 'Bütçe',
-              value: widget.travel['budget'],
-              color: const Color(0xFFFCF3F6),
             ),
           ),
         ],

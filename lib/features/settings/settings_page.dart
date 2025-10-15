@@ -133,6 +133,36 @@ class _SettingsPageState extends State<SettingsPage> {
 
               const SizedBox(height: 32),
 
+              // Debug Section - Currently disabled
+              // if (kDebugMode) // Only show in debug mode
+              //   Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       const Text(
+              //         'Geliştirici Araçları',
+              //         style: TextStyle(
+              //           fontSize: 20,
+              //           fontWeight: FontWeight.bold,
+              //           color: Colors.black,
+              //         ),
+              //       ),
+              //       const SizedBox(height: 16),
+              //       _buildSettingsItem(
+              //         icon: Icons.bug_report_outlined,
+              //         title: 'Firestore Test (Users)',
+              //         subtitle: 'Kullanıcı veritabanı bağlantısını test et',
+              //         onTap: () {
+              //           Navigator.of(context).push(
+              //             MaterialPageRoute(
+              //               builder: (context) => const FirestoreTestPage(),
+              //             ),
+              //           );
+              //         },
+              //       ),
+              //       const SizedBox(height: 32),
+              //     ],
+              //   ),
+
               // Preferences Section
               const Text(
                 'Tercihler',

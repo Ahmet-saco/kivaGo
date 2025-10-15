@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../quiz/quiz_intro_page.dart';
 
 /// Home page - AI Chat
 class ChatPage extends StatefulWidget {
@@ -74,15 +75,6 @@ class _ChatPageState extends State<ChatPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: IconButton(
-              icon: const Icon(Icons.settings_outlined, color: Colors.black),
-              onPressed: () {},
-            ),
-          ),
-        ],
       ),
       drawer: _buildDrawer(),
       body: Column(
@@ -328,6 +320,87 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                 ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Travel Personality CTA
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFCE4E0), Color(0xFFF3E6D2)],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0xFFC11336).withOpacity(0.3),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Text(
+                          '🧭',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Seyahat Kişiliğini Belirle',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2C2C2C),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Sana özel önerileri keşfet',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF666666),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 36,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close drawer
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const QuizIntroPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFC11336),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Teste Başla',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 

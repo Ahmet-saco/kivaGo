@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../core/services/auth_service.dart';
 import '../../core/widgets/app_scaffold.dart';
-import '../auth/signup_page.dart';
+import '../walkthrough/walkthrough_page.dart';
 
 /// Splash screen with kivaGo branding
 class SplashScreen extends StatefulWidget {
@@ -62,15 +62,15 @@ class _SplashScreenState extends State<SplashScreen>
           MaterialPageRoute(builder: (context) => const AppScaffold()),
         );
       } else {
-        // User is not logged in, go to sign up
+        // User is not logged in, go to walkthrough
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const SignUpPage()),
+          MaterialPageRoute(builder: (context) => const WalkthroughPage()),
         );
       }
     } catch (e) {
-      // On error, go to sign up
+      // On error, go to walkthrough
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignUpPage()),
+        MaterialPageRoute(builder: (context) => const WalkthroughPage()),
       );
     }
   }
@@ -146,9 +146,22 @@ class _SplashScreenState extends State<SplashScreen>
 
                 // Tagline
                 const Text(
+                  'Nasıl hissetmek istersin?',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Color(0xFF2C2C2C),
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Subtitle
+                const Text(
                   'Senin tarzın, Senin seyahatin',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: Color(0xFF666666),
                     letterSpacing: 0.5,
                   ),

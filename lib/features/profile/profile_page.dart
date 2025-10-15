@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../quiz/quiz_intro_page.dart';
 
 /// Profile page
 class ProfilePage extends StatelessWidget {
@@ -152,129 +153,78 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Stats Section
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'İstatistikler',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+              // Travel Personality CTA
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const QuizIntroPage(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFCE4E0), Color(0xFFF3E6D2)],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFFC11336).withOpacity(0.3),
+                      width: 2,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            '🧭',
+                            style: TextStyle(fontSize: 32),
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: const Color(0xFFE0E0E0),
-                                width: 1,
+                      const SizedBox(width: 16),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Seyahat Kişiliğini Belirle',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2C2C2C),
                               ),
                             ),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  '12',
-                                  style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'Ülke',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFFCD5970),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: const Color(0xFFE0E0E0),
-                                width: 1,
+                            SizedBox(height: 4),
+                            Text(
+                              'Sana özel deneyimler için teste başla!',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF666666),
                               ),
                             ),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  '47',
-                                  style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'Seyahat',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFFCD5970),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: const Color(0xFFE0E0E0),
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  '285',
-                                  style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'Gün',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFFCD5970),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                        color: Color(0xFFC11336),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
             ],
           ),
         ),
