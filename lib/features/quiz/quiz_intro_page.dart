@@ -25,15 +25,6 @@ class QuizIntroPage extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                // Close button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, size: 28),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-
                 const Spacer(),
 
                 // Illustration
@@ -95,13 +86,13 @@ class QuizIntroPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 _buildFeature(
-                  icon: Icons.people_outline,
-                  text: 'Benzer gezginlerle eşleş',
+                  icon: Icons.psychology_outlined,
+                  text: 'Kişisel seyahat profili oluştur',
                 ),
                 const SizedBox(height: 16),
                 _buildFeature(
-                  icon: Icons.event_available,
-                  text: 'Ortak etkinlikleri keşfet',
+                  icon: Icons.auto_awesome,
+                  text: 'AI destekli öneriler al',
                 ),
 
                 const Spacer(),

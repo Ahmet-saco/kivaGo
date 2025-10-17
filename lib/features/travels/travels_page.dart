@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/firestore_service.dart';
+import '../../core/models/travel_plan_model.dart';
 import 'travel_edit_page.dart';
+import '../../core/widgets/app_scaffold.dart';
 
 /// Seyahatlerim (My Travels) page - Shows user's confirmed travel plans
 class TravelsPage extends StatefulWidget {
@@ -10,65 +14,51 @@ class TravelsPage extends StatefulWidget {
 }
 
 class _TravelsPageState extends State<TravelsPage> {
+  final AuthService _authService = AuthService();
   String _selectedFilter = 'Tümü';
   final List<String> _filters = ['Tümü', 'Aktif', 'Tamamlanan'];
+  List<TravelPlanModel> _travels = [];
+  bool _isLoading = true;
 
-  // Temsili seyahat verileri (mock data)
-  final List<Map<String, dynamic>> _travels = [
-    {
-      'id': '1',
-      'destination': 'Paris, Fransa',
-      'date': '15-20 Kasım 2025',
-      'status': 'Aktif',
-      'image':
-          'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800',
-      'days': '6 Gün',
-      'activities': 12,
-      'budget': '₺25,000',
-      'color': Color(0xFFC11336),
-    },
-    {
-      'id': '2',
-      'destination': 'Tokyo, Japonya',
-      'date': '5-15 Aralık 2025',
-      'status': 'Aktif',
-      'image':
-          'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800',
-      'days': '10 Gün',
-      'activities': 20,
-      'budget': '₺45,000',
-      'color': Color(0xFFCD5970),
-    },
-    {
-      'id': '3',
-      'destination': 'İstanbul, Türkiye',
-      'date': '1-5 Ekim 2025',
-      'status': 'Tamamlanan',
-      'image':
-          'https://images.unsplash.com/photo-1527838832700-5059252407fa?w=800',
-      'days': '5 Gün',
-      'activities': 8,
-      'budget': '₺8,000',
-      'color': Color(0xFFF56F29),
-    },
-    {
-      'id': '4',
-      'destination': 'Roma, İtalya',
-      'date': '10-17 Eylül 2025',
-      'status': 'Tamamlanan',
-      'image':
-          'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800',
-      'days': '7 Gün',
-      'activities': 15,
-      'budget': '₺20,000',
-      'color': Color(0xFFDEB89A),
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadTravelPlans();
+  }
 
-  List<Map<String, dynamic>> get _filteredTravels {
+  Future<void> _loadTravelPlans() async {
+    try {
+      final currentUser = _authService.currentUser;
+      if (currentUser != null) {
+        final plans =
+            await FirestoreService.getTravelPlansByUser(currentUser.uid);
+        if (mounted) {
+          setState(() {
+            _travels = plans;
+            _isLoading = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      print('Error loading travel plans: $e');
+    }
+  }
+
+  List<TravelPlanModel> get _filteredTravels {
     if (_selectedFilter == 'Tümü') return _travels;
     return _travels
-        .where((travel) => travel['status'] == _selectedFilter)
+        .where((travel) => travel.status == _selectedFilter)
         .toList();
   }
 
@@ -102,128 +92,154 @@ class _TravelsPageState extends State<TravelsPage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: IconButton(
-              icon: const Icon(
-                Icons.add_circle_outline,
-                color: Colors.black,
-                size: 28,
-              ),
-              onPressed: () {
-                // Yeni seyahat oluşturma sayfasına git
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Yeni seyahat planı oluşturuluyor...'),
-                    backgroundColor: Color(0xFFC11336),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20),
-
-          // Filter Chips
-          SizedBox(
-            height: 48,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              itemCount: _filters.length,
-              itemBuilder: (context, index) {
-                final filter = _filters[index];
-                final isSelected = _selectedFilter == filter;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(filter),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedFilter = filter;
-                      });
-                    },
-                    backgroundColor: const Color(0xFFFCF3F6),
-                    selectedColor: const Color(0xFFC11336),
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black87,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
-                      fontSize: 14,
-                    ),
-                    showCheckmark: false,
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide.none,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFFDEB89A),
+              ),
+            )
+          : _filteredTravels.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.flight_takeoff_outlined,
+                        size: 80,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Henüz seyahat planınız yok',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Yeni bir seyahat planı oluşturun',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
                   ),
-                );
-              },
-            ),
-          ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
 
-          const SizedBox(height: 20),
-
-          // Travel Cards List
-          Expanded(
-            child: _filteredTravels.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.flight_takeoff,
-                          size: 80,
-                          color: Colors.grey[300],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Henüz seyahat yok',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'AI asistanından plan oluştur',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                      ],
+                    // Filter Chips
+                    SizedBox(
+                      height: 48,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        itemCount: _filters.length,
+                        itemBuilder: (context, index) {
+                          final filter = _filters[index];
+                          final isSelected = _selectedFilter == filter;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: FilterChip(
+                              label: Text(filter),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                setState(() {
+                                  _selectedFilter = filter;
+                                });
+                              },
+                              backgroundColor: const Color(0xFFFCF3F6),
+                              selectedColor: const Color(0xFFC11336),
+                              labelStyle: TextStyle(
+                                color:
+                                    isSelected ? Colors.white : Colors.black87,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                fontSize: 14,
+                              ),
+                              showCheckmark: false,
+                              side: BorderSide.none,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide.none,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-                    itemCount: _filteredTravels.length,
-                    itemBuilder: (context, index) {
-                      final travel = _filteredTravels[index];
-                      return _buildTravelCard(travel);
-                    },
-                  ),
-          ),
-        ],
+
+                    const SizedBox(height: 20),
+
+                    // Travel Cards List
+                    Expanded(
+                      child: _filteredTravels.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.flight_takeoff,
+                                    size: 80,
+                                    color: Colors.grey[300],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'Henüz seyahat yok',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.grey[600],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'AI asistanından plan oluştur',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[400],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+                              itemCount: _filteredTravels.length,
+                              itemBuilder: (context, index) {
+                                final travel = _filteredTravels[index];
+                                return _buildTravelCard(travel);
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Ana Sayfa'ya (ChatPage) yönlendir - bottom navigation korunur
+          appScaffoldKey.currentState?.switchToChatPage();
+        },
+        backgroundColor: const Color(0xFFC11336),
+        foregroundColor: Colors.white,
+        elevation: 8,
+        child: const Icon(Icons.add, size: 28),
       ),
     );
   }
 
-  Widget _buildTravelCard(Map<String, dynamic> travel) {
+  Widget _buildTravelCard(TravelPlanModel travel) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -249,7 +265,7 @@ class _TravelsPageState extends State<TravelsPage> {
                   top: Radius.circular(20),
                 ),
                 child: Image.network(
-                  travel['image'],
+                  'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800',
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -259,8 +275,8 @@ class _TravelsPageState extends State<TravelsPage> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            travel['color'],
-                            (travel['color'] as Color).withOpacity(0.7),
+                            const Color(0xFFDEB89A),
+                            const Color(0xFFDEB89A).withOpacity(0.7),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -322,7 +338,7 @@ class _TravelsPageState extends State<TravelsPage> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(travel['status']),
+                    color: _getStatusColor(travel.status),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -333,7 +349,7 @@ class _TravelsPageState extends State<TravelsPage> {
                     ],
                   ),
                   child: Text(
-                    travel['status'],
+                    travel.status,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -349,7 +365,7 @@ class _TravelsPageState extends State<TravelsPage> {
                 left: 16,
                 right: 16,
                 child: Text(
-                  travel['destination'],
+                  travel.title,
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -384,7 +400,7 @@ class _TravelsPageState extends State<TravelsPage> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      travel['date'],
+                      '${travel.createdAt.day}/${travel.createdAt.month}/${travel.createdAt.year}',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -401,13 +417,13 @@ class _TravelsPageState extends State<TravelsPage> {
                   children: [
                     _buildInfoChip(
                       Icons.access_time,
-                      travel['days'],
+                      '${travel.suggestedRoute.length} Gün',
                       const Color(0xFFFCF3F6),
                     ),
                     const SizedBox(width: 8),
                     _buildInfoChip(
                       Icons.flag_outlined,
-                      '${travel['status']}',
+                      travel.status,
                       const Color(0xFFFDF5F7),
                     ),
                   ],
@@ -501,7 +517,7 @@ class _TravelsPageState extends State<TravelsPage> {
     );
   }
 
-  void _showTravelDetails(Map<String, dynamic> travel) {
+  void _showTravelDetails(TravelPlanModel travel) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -528,7 +544,7 @@ class _TravelsPageState extends State<TravelsPage> {
               ),
               const SizedBox(height: 24),
               Text(
-                travel['destination'],
+                travel.title,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -536,19 +552,19 @@ class _TravelsPageState extends State<TravelsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              _buildDetailRow(Icons.calendar_today, 'Tarih', travel['date']),
+              _buildDetailRow(Icons.calendar_today, 'Tarih',
+                  '${travel.createdAt.day}/${travel.createdAt.month}/${travel.createdAt.year}'),
               const SizedBox(height: 12),
-              _buildDetailRow(Icons.access_time, 'Süre', travel['days']),
+              _buildDetailRow(Icons.access_time, 'Süre',
+                  '${travel.suggestedRoute.length} Gün'),
               const SizedBox(height: 12),
               _buildDetailRow(
                 Icons.local_activity,
                 'Aktiviteler',
-                '${travel['activities']} aktivite planlandı',
+                '${travel.suggestedRoute.fold<int>(0, (sum, route) => sum + route.activities.length)} aktivite planlandı',
               ),
               const SizedBox(height: 12),
-              _buildDetailRow(Icons.monetization_on, 'Bütçe', travel['budget']),
-              const SizedBox(height: 12),
-              _buildDetailRow(Icons.info_outline, 'Durum', travel['status']),
+              _buildDetailRow(Icons.info_outline, 'Durum', travel.status),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -599,10 +615,23 @@ class _TravelsPageState extends State<TravelsPage> {
     );
   }
 
-  void _editTravel(Map<String, dynamic> travel) {
+  void _editTravel(TravelPlanModel travel) {
+    // Convert TravelPlanModel to Map for TravelEditPage
+    final travelMap = {
+      'id': travel.planId,
+      'destination': travel.title,
+      'date':
+          '${travel.createdAt.day}/${travel.createdAt.month}/${travel.createdAt.year}',
+      'status': travel.status,
+      'days': '${travel.suggestedRoute.length} Gün',
+      'activities': travel.suggestedRoute
+          .fold<int>(0, (sum, route) => sum + route.activities.length),
+    };
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TravelEditPage(travel: travel)),
+      MaterialPageRoute(
+          builder: (context) => TravelEditPage(travel: travelMap)),
     );
   }
 }

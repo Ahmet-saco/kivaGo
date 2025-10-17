@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../quiz/quiz_intro_page.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/models/user_model.dart';
 
 /// Home page - AI Chat
 class ChatPage extends StatefulWidget {
@@ -10,7 +11,10 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  final AuthService _authService = AuthService();
   final TextEditingController _messageController = TextEditingController();
+  UserModel? _currentUser;
+
   final List<Map<String, dynamic>> _messages = [
     {
       'isAI': true,
@@ -25,6 +29,25 @@ class _ChatPageState extends State<ChatPage> {
     {'title': 'City break suggestions', 'time': '2 days ago'},
     {'title': 'Romantic getaway plans', 'time': '1 week ago'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final user = await _authService.getCurrentUserFromFirestore();
+      if (mounted) {
+        setState(() {
+          _currentUser = user;
+        });
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+    }
+  }
 
   void _sendMessage() {
     if (_messageController.text.trim().isEmpty) return;
@@ -46,6 +69,7 @@ class _ChatPageState extends State<ChatPage> {
     });
     Navigator.pop(context); // Close drawer
   }
+
 
   @override
   void dispose() {
@@ -285,33 +309,42 @@ class _ChatPageState extends State<ChatPage> {
                   Container(
                     width: 50,
                     height: 50,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFDEB89A),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDEB89A),
                       shape: BoxShape.circle,
+                      image: _currentUser?.photoUrl.isNotEmpty == true
+                          ? DecorationImage(
+                              image: NetworkImage(_currentUser!.photoUrl),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 28,
-                    ),
+                    child: _currentUser?.photoUrl.isEmpty != false
+                        ? const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 28,
+                          )
+                        : null,
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome Back!',
-                          style: TextStyle(
+                          _currentUser?.displayName ?? 'Welcome Back!',
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
-                          'Your Travel Companion',
-                          style: TextStyle(
+                          _currentUser?.seekerProfile.title ??
+                              'Your Travel Companion',
+                          style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF999999),
                           ),
@@ -323,86 +356,6 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
 
-            const SizedBox(height: 16),
-
-            // Travel Personality CTA
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFFCE4E0), Color(0xFFF3E6D2)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: const Color(0xFFC11336).withOpacity(0.3),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(
-                      children: [
-                        Text(
-                          '🧭',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Seyahat Kişiliğini Belirle',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2C2C2C),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Sana özel önerileri keşfet',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF666666),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 36,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context); // Close drawer
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const QuizIntroPage(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFC11336),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Teste Başla',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
             const SizedBox(height: 16),
 
@@ -517,55 +470,9 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
 
-            // Footer
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Color(0xFFE0E0E0), width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.help_outline,
-                      size: 18,
-                      color: Color(0xFF999999),
-                    ),
-                    label: const Text(
-                      'Help',
-                      style: TextStyle(
-                        color: Color(0xFF999999),
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 1,
-                    height: 20,
-                    color: const Color(0xFFE0E0E0),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.settings_outlined,
-                      size: 18,
-                      color: Color(0xFF999999),
-                    ),
-                    label: const Text(
-                      'Settings',
-                      style: TextStyle(
-                        color: Color(0xFF999999),
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const SizedBox(height: 16),
+
+            // New Chat Button
           ],
         ),
       ),

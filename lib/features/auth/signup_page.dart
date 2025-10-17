@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/services/auth_service.dart';
 import 'signin_page.dart';
+import '../quiz/quiz_intro_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -69,10 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _passwordController.text,
       );
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AppScaffold()),
-        );
+        await _navigateAfterAuth(context);
       }
     } catch (e) {
       if (mounted) {
@@ -106,10 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       final userCredential = await _authService.signInWithGoogle();
       if (userCredential != null && mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AppScaffold()),
-        );
+        await _navigateAfterAuth(context);
       }
     } catch (e) {
       if (mounted) {
@@ -125,12 +120,42 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  Future<void> _navigateAfterAuth(BuildContext context) async {
+    try {
+      final hasCompletedQuiz = await _authService.hasUserCompletedQuiz();
+      
+      if (mounted) {
+        if (hasCompletedQuiz) {
+          // User has completed quiz, go to main app
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const AppScaffold()),
+          );
+        } else {
+          // User hasn't completed quiz, go to quiz intro
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const QuizIntroPage()),
+          );
+        }
+      }
+    } catch (e) {
+      // On error, go to main app
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AppScaffold()),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Form(
             key: _formKey,
@@ -370,7 +395,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 40),
 
               // Sign in link
               Row(

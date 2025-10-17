@@ -90,38 +90,80 @@ extension TravelProfileTypeExtension on TravelProfileType {
   List<String> get suggestedActivities {
     switch (this) {
       case TravelProfileType.adventureSeeker:
-        return ['Paraşüt Atlayışı', 'Dağ Tırmanışı', 'Dalış Turu', 'Rafting', 'Zipline'];
+        return [
+          'Paraşüt Atlayışı',
+          'Dağ Tırmanışı',
+          'Dalış Turu',
+          'Rafting',
+          'Zipline'
+        ];
       case TravelProfileType.relaxedTraveler:
-        return ['Yoga Seansı', 'Spa Günü', 'Plaj Günü', 'Meditasyon', 'Sunset Cruise'];
+        return [
+          'Yoga Seansı',
+          'Spa Günü',
+          'Plaj Günü',
+          'Meditasyon',
+          'Sunset Cruise'
+        ];
       case TravelProfileType.explorer:
-        return ['Şehir Keşfi', 'Gizli Mekanlar Turu', 'Yerel Pazar Gezisi', 'Foto Safari', 'Walking Tour'];
+        return [
+          'Şehir Keşfi',
+          'Gizli Mekanlar Turu',
+          'Yerel Pazar Gezisi',
+          'Foto Safari',
+          'Walking Tour'
+        ];
       case TravelProfileType.luxuryTraveler:
-        return ['Fine Dining', 'Private Tour', 'Yacht Gezisi', 'Helicopter Tour', 'Golf'];
+        return [
+          'Fine Dining',
+          'Private Tour',
+          'Yacht Gezisi',
+          'Helicopter Tour',
+          'Golf'
+        ];
       case TravelProfileType.natureLover:
-        return ['Trekking', 'Camping', 'Wildlife Safari', 'Bisiklet Turu', 'Kuş Gözlem'];
+        return [
+          'Trekking',
+          'Camping',
+          'Wildlife Safari',
+          'Bisiklet Turu',
+          'Kuş Gözlem'
+        ];
       case TravelProfileType.socialTraveler:
-        return ['Pub Crawl', 'Festival', 'Beach Party', 'Grup Yemeği', 'Karaoke'];
+        return [
+          'Pub Crawl',
+          'Festival',
+          'Beach Party',
+          'Grup Yemeği',
+          'Karaoke'
+        ];
       case TravelProfileType.budgetBackpacker:
-        return ['Hostel Buluşması', 'Free Walking Tour', 'Sokak Yemeği Turu', 'Hitchhiking', 'Kamp'];
+        return [
+          'Hostel Buluşması',
+          'Free Walking Tour',
+          'Sokak Yemeği Turu',
+          'Hitchhiking',
+          'Kamp'
+        ];
     }
   }
 
-  String get communityBenefit {
+  String get personalBenefit {
     switch (this) {
       case TravelProfileType.adventureSeeker:
-        return 'Senin gibi adrenalin tutkunlarıyla buluş, birlikte ekstrem sporlar yap!';
+        return 'Adrenalin dolu maceralar ve ekstrem sporlar için ideal destinasyonlar!';
       case TravelProfileType.relaxedTraveler:
-        return 'Huzur arayan gezginlerle tanış, birlikte rahatla!';
+        return 'Huzurlu ve sakin atmosferlerde dinlenme ve rahatlama deneyimleri!';
       case TravelProfileType.explorer:
-        return 'Keşfetmeyi seven gezginlerle yeni yerler keşfet!';
+        return 'Keşfedilmemiş yerler ve gizli hazineler için mükemmel rotalar!';
       case TravelProfileType.luxuryTraveler:
-        return 'Lüks deneyim arayanlarla tanış, premium aktivitelere katıl!';
+        return 'Lüks ve konfor odaklı premium seyahat deneyimleri!';
       case TravelProfileType.natureLover:
-        return 'Doğa tutkunlarıyla buluş, birlikte trekking yap!';
+        return 'Doğanın kalbinde trekking ve doğa sporları için ideal lokasyonlar!';
       case TravelProfileType.socialTraveler:
-        return 'Sosyal gezginlerle parti yap, festivallerde buluş!';
+        return 'Festivaller, etkinlikler ve sosyal aktiviteler için harika destinasyonlar!';
       case TravelProfileType.budgetBackpacker:
-        return 'Sırt çantalı gezginlerle tanış, ekonomik maceralar paylaş!';
+        return 'Ekonomik ve macera dolu sırt çantalı seyahat deneyimleri!';
     }
   }
 
@@ -183,4 +225,3 @@ class TravelProfile {
     };
   }
 }
-

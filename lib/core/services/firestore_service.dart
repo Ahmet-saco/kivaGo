@@ -21,13 +21,14 @@ class FirestoreService {
       print('🔥 Firestore: Creating user document for ${user.uid}');
       final userJson = user.toJson();
       print('🔥 Firestore: User data keys: ${userJson.keys.toList()}');
-      print('🔥 Firestore: SeekerProfile type: ${userJson['seekerProfile'].runtimeType}');
-      
+      print(
+          '🔥 Firestore: SeekerProfile type: ${userJson['seekerProfile'].runtimeType}');
+
       await _firestore
           .collection(_usersCollection)
           .doc(user.uid)
           .set(user.toJson());
-          
+
       print('🔥 Firestore: User document created successfully');
     } catch (e) {
       print('🔥 Firestore: Error creating user: $e');
@@ -38,10 +39,7 @@ class FirestoreService {
   /// Get user by UID
   static Future<UserModel?> getUser(String uid) async {
     try {
-      final doc = await _firestore
-          .collection(_usersCollection)
-          .doc(uid)
-          .get();
+      final doc = await _firestore.collection(_usersCollection).doc(uid).get();
 
       if (doc.exists && doc.data() != null) {
         return UserModel.fromJson(doc.data()!);
@@ -65,12 +63,10 @@ class FirestoreService {
   }
 
   /// Update user's seeker profile
-  static Future<void> updateUserProfile(String uid, SeekerProfileModel profile) async {
+  static Future<void> updateUserProfile(
+      String uid, SeekerProfileModel profile) async {
     try {
-      await _firestore
-          .collection(_usersCollection)
-          .doc(uid)
-          .update({
+      await _firestore.collection(_usersCollection).doc(uid).update({
         'seekerProfile': profile.toJson(),
       });
     } catch (e) {
@@ -81,10 +77,7 @@ class FirestoreService {
   /// Delete user document
   static Future<void> deleteUser(String uid) async {
     try {
-      await _firestore
-          .collection(_usersCollection)
-          .doc(uid)
-          .delete();
+      await _firestore.collection(_usersCollection).doc(uid).delete();
     } catch (e) {
       throw Exception('Failed to delete user: $e');
     }
@@ -96,16 +89,19 @@ class FirestoreService {
   /// Create a new travel plan
   static Future<void> createTravelPlan(TravelPlanModel travelPlan) async {
     try {
-      print('🔥 Firestore: Creating travel plan document for ${travelPlan.planId}');
+      print(
+          '🔥 Firestore: Creating travel plan document for ${travelPlan.planId}');
       final travelPlanJson = travelPlan.toJson();
-      print('🔥 Firestore: Travel plan data keys: ${travelPlanJson.keys.toList()}');
-      print('🔥 Firestore: Suggested route type: ${travelPlanJson['suggestedRoute'].runtimeType}');
-      
+      print(
+          '🔥 Firestore: Travel plan data keys: ${travelPlanJson.keys.toList()}');
+      print(
+          '🔥 Firestore: Suggested route type: ${travelPlanJson['suggestedRoute'].runtimeType}');
+
       await _firestore
           .collection(_travelPlansCollection)
           .doc(travelPlan.planId)
           .set(travelPlanJson);
-          
+
       print('🔥 Firestore: Travel plan document created successfully');
     } catch (e) {
       print('🔥 Firestore: Error creating travel plan: $e');
@@ -116,10 +112,8 @@ class FirestoreService {
   /// Get travel plan by ID
   static Future<TravelPlanModel?> getTravelPlan(String planId) async {
     try {
-      final doc = await _firestore
-          .collection(_travelPlansCollection)
-          .doc(planId)
-          .get();
+      final doc =
+          await _firestore.collection(_travelPlansCollection).doc(planId).get();
 
       if (doc.exists && doc.data() != null) {
         return TravelPlanModel.fromJson(doc.data()!);
@@ -130,8 +124,28 @@ class FirestoreService {
     }
   }
 
+  /// Get travel plans by user ID
+  static Future<List<TravelPlanModel>> getTravelPlansByUser(
+      String userId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection(_travelPlansCollection)
+          .where('ownerId', isEqualTo: userId)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => TravelPlanModel.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      print('🔥 Firestore: Error getting travel plans by user: $e');
+      return [];
+    }
+  }
+
   /// Get all travel plans for a user
-  static Future<List<TravelPlanModel>> getUserTravelPlans(String ownerId) async {
+  static Future<List<TravelPlanModel>> getUserTravelPlans(
+      String ownerId) async {
     try {
       final querySnapshot = await _firestore
           .collection(_travelPlansCollection)
@@ -148,7 +162,8 @@ class FirestoreService {
   }
 
   /// Update travel plan
-  static Future<void> updateTravelPlan(String planId, TravelPlanModel travelPlan) async {
+  static Future<void> updateTravelPlan(
+      String planId, TravelPlanModel travelPlan) async {
     try {
       await _firestore
           .collection(_travelPlansCollection)
@@ -165,14 +180,15 @@ class FirestoreService {
     AiConversationItemModel conversation,
   ) async {
     try {
-      final doc = await _firestore
-          .collection(_travelPlansCollection)
-          .doc(planId)
-          .get();
+      final doc =
+          await _firestore.collection(_travelPlansCollection).doc(planId).get();
 
       if (doc.exists && doc.data() != null) {
         final travelPlan = TravelPlanModel.fromJson(doc.data()!);
-        final updatedConversations = [...travelPlan.aiConversationHistory, conversation];
+        final updatedConversations = [
+          ...travelPlan.aiConversationHistory,
+          conversation
+        ];
 
         final updatedPlan = travelPlan.copyWith(
           aiConversationHistory: updatedConversations,
@@ -192,10 +208,7 @@ class FirestoreService {
   /// Delete travel plan
   static Future<void> deleteTravelPlan(String planId) async {
     try {
-      await _firestore
-          .collection(_travelPlansCollection)
-          .doc(planId)
-          .delete();
+      await _firestore.collection(_travelPlansCollection).doc(planId).delete();
     } catch (e) {
       throw Exception('Failed to delete travel plan: $e');
     }
@@ -210,12 +223,12 @@ class FirestoreService {
       print('🔥 Firestore: Creating match document for ${match.matchId}');
       final matchJson = match.toJson();
       print('🔥 Firestore: Match data keys: ${matchJson.keys.toList()}');
-      
+
       await _firestore
           .collection(_matchesCollection)
           .doc(match.matchId)
           .set(matchJson);
-          
+
       print('🔥 Firestore: Match document created successfully');
     } catch (e) {
       print('🔥 Firestore: Error creating match: $e');
@@ -226,10 +239,8 @@ class FirestoreService {
   /// Get match by ID
   static Future<MatchModel?> getMatch(String matchId) async {
     try {
-      final doc = await _firestore
-          .collection(_matchesCollection)
-          .doc(matchId)
-          .get();
+      final doc =
+          await _firestore.collection(_matchesCollection).doc(matchId).get();
 
       if (doc.exists && doc.data() != null) {
         return MatchModel.fromJson(doc.data()!);
@@ -260,10 +271,7 @@ class FirestoreService {
   /// Update match status
   static Future<void> updateMatchStatus(String matchId, String status) async {
     try {
-      await _firestore
-          .collection(_matchesCollection)
-          .doc(matchId)
-          .update({
+      await _firestore.collection(_matchesCollection).doc(matchId).update({
         'status': status,
         'updatedAt': DateTime.now(),
       });
@@ -275,10 +283,7 @@ class FirestoreService {
   /// Delete match
   static Future<void> deleteMatch(String matchId) async {
     try {
-      await _firestore
-          .collection(_matchesCollection)
-          .doc(matchId)
-          .delete();
+      await _firestore.collection(_matchesCollection).doc(matchId).delete();
     } catch (e) {
       throw Exception('Failed to delete match: $e');
     }
@@ -290,10 +295,7 @@ class FirestoreService {
   /// Check if user exists
   static Future<bool> userExists(String uid) async {
     try {
-      final doc = await _firestore
-          .collection(_usersCollection)
-          .doc(uid)
-          .get();
+      final doc = await _firestore.collection(_usersCollection).doc(uid).get();
       return doc.exists;
     } catch (e) {
       throw Exception('Failed to check user existence: $e');
@@ -315,7 +317,8 @@ class FirestoreService {
   }
 
   /// Get real-time travel plans stream for user
-  static Stream<List<TravelPlanModel>> getUserTravelPlansStream(String ownerId) {
+  static Stream<List<TravelPlanModel>> getUserTravelPlansStream(
+      String ownerId) {
     return _firestore
         .collection(_travelPlansCollection)
         .where('ownerId', isEqualTo: ownerId)

@@ -26,9 +26,9 @@ class _WalkthroughPageState extends State<WalkthroughPage> {
       color: const Color(0xFFF3E6D2),
     ),
     WalkthroughItem(
-      title: "Senin gibi hissedenlerle yola çık.",
-      description: "Benzer ruh halindeki gezginlerle tanış, ortak deneyimler yaşa ve unutulmaz anılar biriktir.",
-      emoji: "👥",
+      title: "Kişisel seyahat pusulan.",
+      description: "AI asistanın, seni anlayan ve hayallerini gerçeğe dönüştüren kişisel seyahat planları oluşturur.",
+      emoji: "🗺️",
       color: const Color(0xFFFAE8DC),
     ),
   ];

@@ -2,11 +2,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user_model.dart';
 import 'firestore_service.dart';
+import 'quiz_check_service.dart';
 
 /// Authentication service for handling Google Sign-In and Firebase Auth
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  late final QuizCheckService _quizCheckService;
+
+  AuthService() {
+    _quizCheckService = QuizCheckService(this);
+  }
 
   // Get current user
   User? get currentUser => _auth.currentUser;
@@ -199,6 +205,21 @@ class AuthService {
       print('Error updating FCM token: $e');
       // Don't rethrow - FCM token update is not critical
     }
+  }
+
+  /// Check if current user has completed quiz
+  Future<bool> hasUserCompletedQuiz() async {
+    return await _quizCheckService.hasUserCompletedQuiz();
+  }
+
+  /// Get user's travel personality title
+  Future<String> getUserTravelPersonalityTitle() async {
+    return await _quizCheckService.getUserTravelPersonalityTitle();
+  }
+
+  /// Get user's travel personality description
+  Future<String> getUserTravelPersonalityDescription() async {
+    return await _quizCheckService.getUserTravelPersonalityDescription();
   }
 }
 

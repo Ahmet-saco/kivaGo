@@ -12,6 +12,9 @@ class AppScaffold extends StatefulWidget {
   State<AppScaffold> createState() => _AppScaffoldState();
 }
 
+// Global key to access AppScaffold state
+final GlobalKey<_AppScaffoldState> appScaffoldKey = GlobalKey<_AppScaffoldState>();
+
 class _AppScaffoldState extends State<AppScaffold> {
   int _currentIndex = 0;
 
@@ -22,6 +25,13 @@ class _AppScaffoldState extends State<AppScaffold> {
     ProfilePage(),
     SettingsPage(),
   ];
+
+  // Method to switch to chat page
+  void switchToChatPage() {
+    setState(() {
+      _currentIndex = 0; // ChatPage is at index 0
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

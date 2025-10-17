@@ -3,6 +3,7 @@ import 'dart:async';
 import '../../core/services/auth_service.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../walkthrough/walkthrough_page.dart';
+import '../quiz/quiz_intro_page.dart';
 
 /// Splash screen with kivaGo branding
 class SplashScreen extends StatefulWidget {
@@ -57,10 +58,21 @@ class _SplashScreenState extends State<SplashScreen>
       final user = _authService.currentUser;
 
       if (user != null) {
-        // User is logged in, go to main app
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const AppScaffold()),
-        );
+        // User is logged in, check if quiz is completed
+        final hasCompletedQuiz = await _authService.hasUserCompletedQuiz();
+        if (mounted) {
+          if (hasCompletedQuiz) {
+            // User has completed quiz, go to main app
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => AppScaffold(key: appScaffoldKey)),
+            );
+          } else {
+            // User hasn't completed quiz, go to quiz intro
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const QuizIntroPage()),
+            );
+          }
+        }
       } else {
         // User is not logged in, go to walkthrough
         Navigator.of(context).pushReplacement(

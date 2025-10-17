@@ -143,7 +143,8 @@ class _QuizResultPageState extends State<QuizResultPage>
                                 ),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: const Color(0xFFC11336).withOpacity(0.3),
+                                  color:
+                                      const Color(0xFFC11336).withOpacity(0.3),
                                   width: 3,
                                 ),
                               ),
@@ -164,7 +165,8 @@ class _QuizResultPageState extends State<QuizResultPage>
                                 color: const Color(0xFFFCF3F6),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  color: const Color(0xFFC11336).withOpacity(0.2),
+                                  color:
+                                      const Color(0xFFC11336).withOpacity(0.2),
                                 ),
                               ),
                               child: Text(
@@ -216,7 +218,8 @@ class _QuizResultPageState extends State<QuizResultPage>
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFC11336).withOpacity(0.1),
+                                  color:
+                                      const Color(0xFFC11336).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: const Icon(
@@ -255,7 +258,8 @@ class _QuizResultPageState extends State<QuizResultPage>
                                   ),
                                   borderRadius: BorderRadius.circular(25),
                                   border: Border.all(
-                                    color: const Color(0xFFC11336).withOpacity(0.3),
+                                    color: const Color(0xFFC11336)
+                                        .withOpacity(0.3),
                                     width: 1,
                                   ),
                                 ),
@@ -289,13 +293,13 @@ class _QuizResultPageState extends State<QuizResultPage>
                           const Row(
                             children: [
                               Icon(
-                                Icons.people_outline,
+                                Icons.psychology_outlined,
                                 color: Colors.white,
                                 size: 24,
                               ),
                               SizedBox(width: 8),
                               Text(
-                                'Topluluk',
+                                'Kişisel Faydalar',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -306,7 +310,7 @@ class _QuizResultPageState extends State<QuizResultPage>
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            widget.profile.type.communityBenefit,
+                            widget.profile.type.personalBenefit,
                             style: const TextStyle(
                               fontSize: 15,
                               color: Colors.white,
@@ -319,7 +323,7 @@ class _QuizResultPageState extends State<QuizResultPage>
 
                     const SizedBox(height: 24),
 
-                    // Similar travelers (mock data)
+                    // Personal travel insights
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
@@ -334,14 +338,14 @@ class _QuizResultPageState extends State<QuizResultPage>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.groups,
+                                Icons.lightbulb_outline,
                                 color: Color(0xFFC11336),
                                 size: 28,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                widget.profile.type.title,
-                                style: const TextStyle(
+                              const Text(
+                                'Seyahat İpuçları',
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF2C2C2C),
@@ -350,7 +354,6 @@ class _QuizResultPageState extends State<QuizResultPage>
                             ],
                           ),
                           const SizedBox(height: 16),
-                          // Mock user count
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
@@ -364,13 +367,13 @@ class _QuizResultPageState extends State<QuizResultPage>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.person_outline,
+                                  Icons.travel_explore,
                                   size: 20,
                                   color: Color(0xFFC11336),
                                 ),
                                 SizedBox(width: 8),
                                 Text(
-                                  '1,234 benzer gezgin',
+                                  'Kişiselleştirilmiş rotalar',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
@@ -394,13 +397,13 @@ class _QuizResultPageState extends State<QuizResultPage>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.event_available,
+                                  Icons.auto_awesome,
                                   size: 20,
                                   color: Color(0xFFC11336),
                                 ),
                                 SizedBox(width: 8),
                                 Text(
-                                  '47 aktif etkinlik',
+                                  'AI destekli öneriler',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
@@ -416,7 +419,7 @@ class _QuizResultPageState extends State<QuizResultPage>
 
                     const SizedBox(height: 40),
 
-                    // Primary action - View community
+                    // Primary action - Start exploring
                     Container(
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -434,11 +437,10 @@ class _QuizResultPageState extends State<QuizResultPage>
                           onPressed: () {
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (context) => const AppScaffold(),
+                                builder: (context) => AppScaffold(key: appScaffoldKey),
                               ),
                               (route) => false,
                             );
-                            // TODO: Navigate to community/events tab in future
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFC11336),
@@ -451,10 +453,10 @@ class _QuizResultPageState extends State<QuizResultPage>
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.groups, size: 26),
+                              Icon(Icons.travel_explore, size: 26),
                               SizedBox(width: 12),
                               Text(
-                                'Benzer Gezginleri Gör',
+                                'Kişisel Seyahatimi Başlat',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -476,7 +478,7 @@ class _QuizResultPageState extends State<QuizResultPage>
                         onPressed: () {
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
-                              builder: (context) => const AppScaffold(),
+                              builder: (context) => AppScaffold(key: appScaffoldKey),
                             ),
                             (route) => false,
                           );
